@@ -1,12 +1,18 @@
 <script setup lang="ts">
 import { authStore } from '@/store/auth';
+import { onMounted } from 'vue';
 
 
-const { user,getUser,logout } = authStore()
+const { user,getUser,logout,isLoggedIn } = authStore()
 
 
 getUser()
 
+onMounted(() =>{
+    if(!isLoggedIn){
+        getUser()
+    }
+})
 </script>
 
 

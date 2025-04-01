@@ -13,7 +13,7 @@ export const authStore = defineStore("auth", () => {
         baseURL: "http://localhost:8000",
       });
       const response = await api.post("/register", payload);
-
+      await getUser()
       router.push("/dashboard");
       console.log(response.data);
     } catch (error) {
@@ -28,7 +28,8 @@ export const authStore = defineStore("auth", () => {
         baseURL: "http://localhost:8000",
       });
       const { data } = await api.post("/login", authData);
-      user.value = data;
+      await getUser()
+      router.push("/dashboard")
     } catch (error) {
       console.error("Registration failed:", error);
       alert("Registration failed. Please try again.");
@@ -63,4 +64,11 @@ export const authStore = defineStore("auth", () => {
     getUser,
     logout,
   };
-});
+},
+{
+    persist:{
+        storage:sessionStorage,
+        pick:["user","isLoggedIn"]
+    }
+}
+);
