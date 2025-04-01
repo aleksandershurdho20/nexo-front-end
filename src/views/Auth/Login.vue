@@ -2,27 +2,14 @@
 import { reactive } from 'vue';
 import type { LoginData } from '@/types/Auth';
 import Input from '@/common/Input.vue';
-import api from '@/utils/api';
+import { authStore } from '@/store/auth';
 
+const {handleLogin} = authStore()
 const authData = reactive<LoginData>({
     email: '',
     password: ''
 });
 
-const handleLogin = async () => {
-
-    try {
-        await api.get("/sanctum/csrf-cookie", {
-            baseURL: 'http://localhost:8000'
-        })
-        const response = await api.post('/login', authData);
-
-        console.log(response.data);
-    } catch (error) {
-        console.error('Registration failed:', error);
-        alert('Registration failed. Please try again.');
-    }
-};
 </script>
 
 <template>
@@ -40,8 +27,7 @@ const handleLogin = async () => {
                         Login to your account
                     </h1>
 
-                    <!-- Login Form -->
-                    <form @submit.prevent="handleLogin" class="space-y-4">
+                    <form @submit.prevent="handleLogin(authData)" class="space-y-4">
                         <Input v-model="authData.email" id="email" type="email" label="Your email"
                             placeholder="name@company.com" />
                         <Input v-model="authData.password" id="password" type="password" label="Password"

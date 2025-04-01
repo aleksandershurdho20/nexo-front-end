@@ -1,28 +1,12 @@
 <script setup lang="ts">
-import api from '@/utils/api';
-import { ref } from 'vue';
+import { authStore } from '@/store/auth';
 
 
-const user = ref(null)
-const getUser = async () => {
-    try {
+const { user,getUser,logout } = authStore()
 
-        const {data} = await api.get("/user")
-        console.log(data)
-        user.value = data
-    } catch (error) {
-        console.log(error)
-    }
-}
+
 getUser()
 
-const logout = async() =>{
-    try {
-        await api.post("/logout")
-    } catch (error) {
-        
-    }
-}
 </script>
 
 

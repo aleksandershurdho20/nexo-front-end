@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue';
-import api from '@/utils/api';
+import { authStore } from '@/store/auth';
 
 
 interface RegistrationForm {
@@ -16,35 +16,9 @@ const form = reactive<RegistrationForm>({
     password:"",
     password_confirmation:""
 })
-const email = ref('');
-const password = ref('');
-const confirmPassword = ref('');
+
 const termsAccepted = ref(false);
-
-const register = async (payload : RegistrationForm) => {
-  if (!termsAccepted.value) {
-    alert('You must accept the terms and conditions.');
-    return;
-  }
-
-  if (password.value !== confirmPassword.value) {
-    alert('Passwords do not match.');
-    return;
-  }
-
-  try {
-    await api.get("/sanctum/csrf-cookie",{
-        baseURL:'http://localhost:8000'
-    })
-    const response = await api.post('/register', payload);
-
-    alert('Registration successful');
-    console.log(response.data);
-  } catch (error) {
-    console.error('Registration failed:', error);
-    alert('Registration failed. Please try again.');
-  }
-};
+const { register } = authStore()
 </script>
 
 <template>
