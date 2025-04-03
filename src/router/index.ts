@@ -4,6 +4,7 @@ import Register from '@/views/Auth/Register.vue'
 import Login from '@/views/Auth/Login.vue'
 import Dashboard from '@/views/Dashboard/Dashboard.vue'
 import { authStore } from '@/store/auth'
+import CreatePost from '@/views/Posts/CreatePost.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -27,6 +28,12 @@ const router = createRouter({
       path: '/dashboard',
       name: 'dashboard',
       component: Dashboard,
+      meta:{ requiresAuth:true}
+    },
+    {
+      path: '/create-post',
+      name: 'create-post',
+      component: CreatePost,
       meta:{ requiresAuth:true}
     },
    
