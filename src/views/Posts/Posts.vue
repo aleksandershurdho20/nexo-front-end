@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import api from '@/utils/api';
 import { onMounted, ref } from 'vue';
-import { TailwindPagination } from 'laravel-vue-pagination';
 
 interface Post {
     id: number;
@@ -50,6 +49,16 @@ onMounted(async() =>{
 await getResults();
 
 })
+
+const handleDelete = async(id : number) =>{
+try {
+    await api.delete(`/dashboard/posts/${id}`)
+    await getResults()
+} catch (error) {
+ 
+    console.log(error)
+}
+}
 </script>
 
 <template>
@@ -86,7 +95,7 @@ await getResults();
                         <td class="px-6 py-4">{{ post.created_at }}</td>
                         <td class="px-6 py-4">
                             <div class="flex gap-5 align-center">
-                                <button class="cursor-pointer">Delete</button>
+                                <button class="cursor-pointer" @click.prevent="handleDelete(post.id)">Delete</button>
                                 <button class="cursor-pointer">Edit</button>
                             </div>
                         </td>
@@ -94,12 +103,12 @@ await getResults();
                 </tbody>
             </table>
             {{ console.log(laravelData,"laravelData") }}
-            <TailwindPagination
+            <!-- <TailwindPagination
             :data="laravelData"
             @pagination-change-page="getResults"            
                 class="mt-4"
             />
-            
+             -->
         </template>
     </div>
 </template>
