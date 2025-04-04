@@ -1,14 +1,9 @@
 <script lang="ts" setup>
+import PostForm from '@/forms/PostForm.vue';
 import api from '@/utils/api';
 import { onMounted, ref } from 'vue';
+import type { Post } from '@/types/Posts';
 
-interface Post {
-    id: number;
-    title: string;
-    description: string;
-    is_published: boolean;
-    created_at: string;
-}
 
 interface PaginatedData {
     current_page: number;
@@ -32,6 +27,8 @@ interface PaginatedData {
 
 const laravelData = ref<PaginatedData | null>(null);
 const isLoading = ref(true);
+const showModal = ref(false);
+const currentPost = ref<Post | null>(null);
 
 const getResults = async (page = 1) => {
     isLoading.value = true;
@@ -45,19 +42,43 @@ const getResults = async (page = 1) => {
     }
 }
 
-onMounted(async() =>{
-await getResults();
-
+onMounted(async() => {
+    await getResults();
 })
 
-const handleDelete = async(id : number) =>{
-try {
-    await api.delete(`/dashboard/posts/${id}`)
-    await getResults()
-} catch (error) {
- 
-    console.log(error)
+const handleDelete = async(id: number) => {
+    try {
+        await api.delete(`/dashboard/posts/${id}`)
+        await getResults()
+    } catch (error) {
+        console.log(error)
+    }
 }
+
+const openEditModal = (post: Post) => {
+    currentPost.value = { ...post };
+    showModal.value = true;
+}
+
+const closeModal = () => {
+    showModal.value = false;
+    currentPost.value = null;
+}
+
+const handleUpdate = async() => {
+    if (!currentPost.value) return;
+    
+    try {
+        await api.put(`/dashboard/posts/${currentPost.value.id}`, {
+            title: currentPost.value.title,
+            description: currentPost.value.description,
+            is_published: currentPost.value.is_published
+        });
+        await getResults();
+        closeModal();
+    } catch (error) {
+        console.log(error);
+    }
 }
 </script>
 
@@ -95,20 +116,34 @@ try {
                         <td class="px-6 py-4">{{ post.created_at }}</td>
                         <td class="px-6 py-4">
                             <div class="flex gap-5 align-center">
-                                <button class="cursor-pointer" @click.prevent="handleDelete(post.id)">Delete</button>
-                                <button class="cursor-pointer">Edit</button>
+                                <button class="cursor-pointer" @click.prevent="handleDelete(post.id as number)">Delete</button>
+                                <button class="cursor-pointer" @click.prevent="openEditModal(post)">Edit</button>
                             </div>
                         </td>
                     </tr>
                 </tbody>
             </table>
-            {{ console.log(laravelData,"laravelData") }}
-            <!-- <TailwindPagination
-            :data="laravelData"
-            @pagination-change-page="getResults"            
-                class="mt-4"
-            />
-             -->
         </template>
+    </div>
+
+    <div v-if="showModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full">
+        <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+            <div class="mt-3 text-center">
+              <PostForm
+                form-title="Edit Post"
+                :data="currentPost as Post"
+
+                :onSave="handleUpdate"
+
+              />
+                <div class="items-center px-4 py-3">
+                   
+                    <button @click="closeModal"
+                        class="px-4 py-2 bg-gray-500 text-white text-base font-medium rounded-md shadow-sm hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
