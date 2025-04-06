@@ -4,6 +4,7 @@ import { onMounted, reactive, ref } from 'vue';
 import TheWelcome from '../components/TheWelcome.vue'
 import api from '@/utils/api';
 import Footer from '@/common/Footer.vue';
+import router from '@/router';
 
 const posts = ref([])
 const showCommentInput = reactive({})
@@ -69,12 +70,13 @@ const submitComment = async (post) => {
 
     }
 };
+const handleViewPost = (id:number) => router.push(`/post/${id}`)
 </script>
 
 <template>
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         <template v-if="posts">
-            <div v-for="post in posts" :key="post.id">
+            <div v-for="post in posts" :key="post.id" @click.prevent="handleViewPost(post.id)">
                 <article
                     class="bg-gray-800 bg-opacity-50 rounded-xl overflow-hidden border border-gray-700 hover:border-purple-500 transition-all duration-300 group">
                     <div class="h-48 bg-purple-800 relative overflow-hidden">
