@@ -41,13 +41,19 @@ onMounted(async () => {
     }
 });
 
-const toggleLike = () => {
+const toggleLike = async() => {
     if (!post.value) return;
     
     post.value.isLiked = !post.value.isLiked;
     if (post.value.isLiked && post.value.isDisliked) {
         post.value.isDisliked = false;
     }
+
+    const params = {
+        action:"like",
+        post_insights_id:1
+    }
+    await api.post("/post-insights",params)
 };
 
 const toggleDislike = () => {
