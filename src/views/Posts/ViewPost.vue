@@ -3,6 +3,7 @@ import { onMounted, reactive, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import api from '@/utils/api';
 import Footer from '@/common/Footer.vue';
+import { authStore } from '@/store/auth';
 
 const route = useRoute();
 const post = ref(null);
@@ -17,6 +18,8 @@ const data = reactive({
     replyContent: {}
 });
 
+
+const { user } = authStore()
 onMounted(async () => {
     try {
         const postId = route.params.id;
@@ -69,9 +72,25 @@ const toggleCommentInput = () => {
     showCommentInput.value = !showCommentInput.value;
 };
 
-const toggleFavorite = () => {
+const toggleFavorite = async () => {
     if (!post.value) return;
     
+    console.log(post,"posta")
+
+    try {
+        await api.post("/favorite",{
+        post_id:post.value.id,
+        user_id:user.id
+            })
+
+            alert("Added to favorites")
+
+    
+
+
+    } catch (error) {
+        alert("Error, please try again")
+    }
     post.value.isFavorite = !post.value.isFavorite;
 };
 
