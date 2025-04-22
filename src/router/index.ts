@@ -7,6 +7,7 @@ import { authStore } from '@/store/auth'
 import CreatePost from '@/views/Posts/CreatePost.vue'
 import Posts from '@/views/Posts/Posts.vue'
 import ViewPost from '@/views/Posts/ViewPost.vue'
+import FavoritePosts from '@/views/Posts/FavoritePosts.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -48,6 +49,12 @@ const router = createRouter({
       path: '/post/:id',
       name: 'view-post',
       component: ViewPost,
+    },
+    {
+      path: '/favorite-posts',
+      name: 'favorite-posts',
+      component: FavoritePosts,
+      meta:{ requiresAuth:true}
     },
    
   ],
