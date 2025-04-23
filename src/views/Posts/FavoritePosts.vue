@@ -40,8 +40,22 @@ const removeFromFavorites = (id) => {
     data.posts = data.posts.filter(post => post.id !== id);
 };
 
-const searchFavorites = () => {
-    console.log(`Searching for: ${searchQuery.value}`);
+const searchFavorites = async() => {
+
+    data.loading = true
+    try {
+        const res = await api.get(`/search/favorite-posts?title=${searchQuery.value}`)
+        data.posts = res.data.favorite_posts
+        console.log(data);
+
+    } catch (error) {
+        alert(error.response.data.message)
+        console.log(error)
+    }
+    finally{
+        data.loading = false
+    }
+
 };
 
 const changePage = (direction) => {
