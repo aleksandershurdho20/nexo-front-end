@@ -16,6 +16,7 @@ import Footer from './common/Footer.vue';
         <RouterLink to="/register">Register</RouterLink>
         <RouterLink to="/dashboard">Dashboard</RouterLink>
         <RouterLink to="/posts">Posts</RouterLink>
+        <RouterLink to="/favorite-posts">Favorite Posts</RouterLink>
 
        
         
